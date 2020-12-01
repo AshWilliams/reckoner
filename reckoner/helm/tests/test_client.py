@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from reckoner.helm.client import HelmClient, Helm2Client, Helm3Client, HelmClientException, HelmVersionException, get_helm_client
+from reckoner.helm.client import HelmClient, Helm3Client, HelmClientException, HelmVersionException, get_helm_client
 from reckoner.helm.command import HelmCommand
 from reckoner.helm.cmd_response import HelmCmdResponse
 from reckoner.helm.provider import HelmProvider
