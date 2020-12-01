@@ -26,7 +26,7 @@ def get_helm_client(helm_arguments, client_version=None, helm_provider=HelmProvi
       helm_arguments(list): Arguments passed into the HelmClient class
 
     Returns:
-      Helm2Client or Helm3Client
+      Helm3Client
 
 
     Raises
@@ -41,7 +41,6 @@ def get_helm_client(helm_arguments, client_version=None, helm_provider=HelmProvi
         else:
             logging.debug('Helm version not declared, detecting version...')
             client3 = Helm3Client(default_helm_arguments=helm_arguments, provider=helm_provider)
-
             logging.debug('Checking for Helm 3 client')
             detected_version = client3.version
             logging.info('Found Helm Version {}'.format(detected_version))

@@ -239,13 +239,6 @@ HELM_REPOSITORY_CONFIG="/Users/test/Library/Preferences/helm/repositories.yaml
 class TestGetHelmClient(unittest.TestCase):
     """Testing the get_helm_client factory to get different versions of helm based on results from helm calls"""
 
-    def test_get_helm_2_client(self):
-        """Test to make sure we get a helm 2 client when passed certain information"""
-        provider_mock = mock.MagicMock(HelmProvider, autospec=True)
-        provider_mock.execute.side_effect = mock_execute_helm2provider
-        helm_client = get_helm_client([], helm_provider=provider_mock)
-        self.assertIsInstance(helm_client, Helm2Client)
-
     def test_get_helm_3_client(self):
         """Test getting a helm 3 client when passed certian info"""
         provider_mock = mock.MagicMock(HelmProvider, autospec=True)
@@ -254,12 +247,7 @@ class TestGetHelmClient(unittest.TestCase):
         self.assertIsInstance(helm_client, Helm3Client)
 
     def test_static_version_selection(self):
-        """Test that when we explicitly want helm2 or helm3 we get that "client" class"""
-        provider_mock = mock.MagicMock(HelmProvider, autospec=True)
-        provider_mock.execute.side_effect = mock_execute_helm2provider
-        helm_client = get_helm_client([], client_version="2", helm_provider=provider_mock)
-        self.assertIsInstance(helm_client, Helm2Client)
-
+        """Test that when we explicitly want helm3 we get that "client" class"""
         provider_mock = mock.MagicMock(HelmProvider, autospec=True)
         provider_mock.execute.side_effect = mock_execute_helm3provider
         helm_client = get_helm_client([], client_version="3", helm_provider=provider_mock)
@@ -278,29 +266,11 @@ class TestGetHelmClient(unittest.TestCase):
             get_helm_client([], helm_provider=provider_mock)
 
     def test_non_existent_versions(self):
-        """Test that we only accept 2 or 3 for helm version"""
+        """Test that we only accept 3 for helm version"""
         with self.assertRaises(HelmClientException):
             provider_mock = mock.MagicMock(HelmProvider, autospec=True)
             provider_mock.execute.side_effect = []
             get_helm_client([], client_version="1001", helm_provider=provider_mock)
-
-
-def mock_execute_helm2provider(helm_command):
-    if helm_command.command == 'version':
-        if '--server' in helm_command.arguments:
-            return HelmCmdResponse(
-                exit_code=0,
-                stderr='',
-                stdout='Server: v2.14.1+g5270352',
-                command=helm_command,
-            )
-        if '--client' in helm_command.arguments:
-            return HelmCmdResponse(
-                exit_code=0,
-                stderr='',
-                stdout='Client: v2.13.1+g618447c',
-                command=helm_command,
-            )
 
 
 def mock_execute_helm3provider(helm_command):
